@@ -1,0 +1,35 @@
+<html>
+   <body style="font-family: arial; font-size: 12px;">
+      <h2>Deployment of #{Octopus.Project.Name} #{Octopus.Release.Number} to #{Octopus.Environment.Name}</h2>
+      <p><em>Deployed by at #{Octopus.Deployment.Created}</em>
+		<br>
+		<a href="http://[OctoSvrUrl]/app#/projects/#{Octopus.Project.Name}/releases/#{Octopus.Release.Number}">Click here</a> to view the release detail
+	  </p>
+      #{if Octopus.Release.Notes}
+      <h3>Release notes</h3>
+      <p>#{Octopus.Release.Notes}</p>
+      #{/if}
+	  
+      <h3>Deployment process</h3>
+      <p>The deployment included the following actions:</p>
+      <ul>
+           #{each action in Octopus.Action}    
+         <li><strong>#{action.Name}</strong> #{if action.Package.NuGetPackageId}&mdash; #{action.Package.NuGetPackageId} <em>version #{action.Package.NuGetPackageVersion}#{/if}</em></li>
+           #{/each}
+      </ul>
+	  
+      <h4>Task summary</h4>
+      <ol>
+         #{each step in Octopus.Step}  #{if step.Status.Code}    
+         <li>
+            #{step | HtmlEscape} &mdash; <strong>#{step.Status.Code}</strong>     #{if step.Status.Error}      
+            <pre>#{step.Status.Error | HtmlEscape}</pre>
+                  
+            <pre>#{step.Status.ErrorDetail | HtmlEscape}</pre>
+                #{/if}      
+         </li>
+           #{/if}#{/each}
+      </ol>
+      <p>View the <a href="http://[OctoSvrUrl]#{Octopus.Web.DeploymentLink}">detailed deployment log</a>.</p>
+   </body>
+</html>
